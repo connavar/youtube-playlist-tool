@@ -10,10 +10,10 @@ import (
 func GetAll() {
 
 	fmt.Println("Starting...")
-	c, _ := client.NewYoutubeClient()
+	c := client.Drivers[client.DriverYoutube]
 
 	tp := NewThreadPool(4, func(playlist model.Playlist) {
-		for playListItem := range c.PlaylistItems(&playlist) {
+		for playListItem := range c.PlaylistItems(playlist.Id) {
 			fmt.Println(" - ", playListItem.Title, playListItem.VideoChannelOwner)
 		}
 	})
