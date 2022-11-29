@@ -10,34 +10,34 @@ import (
 	"log"
 )
 
-//type Driver string
-//
-//var (
-//	DriverYoutube Driver = "YTDriver"
-//	DriverSpotify Driver = "SpotifyDriver"
-//	DriverApple Driver = "SpotifyDriver"
-//)
-//
-//var Drivers = map[Driver]*PlaylistReader{
-//	DriverYoutube: NewYoutubeClient(),
-//}
-//
-//
-//type PlaylistReader interface {
-//	//TODO: define
-//}
+type Driver string
+
+var (
+	DriverYoutube Driver = "YouTubeDriver"
+	DriverSpotify Driver = "SpotifyDriver"
+	DriverApple   Driver = "SpotifyDriver"
+)
+
+var Drivers = map[Driver]PlaylistReader{
+	DriverYoutube: NewYoutubeClient(),
+}
+
+type PlaylistReader interface {
+	Playlists() chan model.Playlist
+	PlaylistItems(id string) chan model.PlaylistItem
+}
 
 type YoutubeClient struct {
 	service *youtube.Service
 	part    string
 }
 
-func NewYoutubeClient() (c *YoutubeClient, err error) {
+func NewYoutubeClient() (c *YoutubeClient) {
 	fmt.Println("> Building YT Client")
 	return &YoutubeClient{
 		service: createService(),
 		part:    "snippet",
-	}, nil
+	}
 }
 
 func (c *YoutubeClient) Playlists() chan model.Playlist {
@@ -56,9 +56,9 @@ func (c *YoutubeClient) Playlists() chan model.Playlist {
 	return playlists
 }
 
-func (c *YoutubeClient) PlaylistItems(playlist *model.Playlist) chan model.PlaylistItem {
+func (c *YoutubeClient) PlaylistItems(id string) chan model.PlaylistItem {
 	playlistItems := make(chan model.PlaylistItem)
-	items := c.playlistsItems(playlist.Id, 100, "").Items
+	items := c.playlistsItems(id, 100, "").Items
 	go func() {
 		defer close(playlistItems)
 		for _, item := range items {
