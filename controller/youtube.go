@@ -4,26 +4,41 @@ import (
 	"fmt"
 	"github.com/connavar/youtube-playlist-tool/client"
 	"github.com/connavar/youtube-playlist-tool/model"
+	"strings"
 	"sync"
 )
 
-func GetAll() {
+func GetAllYoutubePlaylists() []model.Playlist {
 
 	fmt.Println("Starting...")
 	c := client.Drivers[client.DriverYoutube]
 
+	youtubePlaylists := make([]model.Playlist, 0)
+
 	tp := NewThreadPool(4, func(playlist model.Playlist) {
 		for playListItem := range c.PlaylistItems(playlist.Id) {
-			fmt.Println(" - ", playListItem.Title, playListItem.VideoChannelOwner)
+			playlist.AddItem(playListItem)
 		}
+		youtubePlaylists = append(youtubePlaylists, playlist)
 	})
 
 	for playlist := range c.Playlists() {
-		// Print the playlist ID and title for the playlist resource.
-		fmt.Println(playlist.Title)
+		// Adds playlist to channel to process playlist items
 		tp.in <- playlist
 	}
+
 	tp.Close()
+
+	return youtubePlaylists
+}
+
+func IsYoutubeMusic(playlist *model.Playlist) bool {
+	for _, item := range playlist.PlaylistItems {
+		if strings.HasSuffix(strings.TrimSpace(item.VideoChannelOwner), "Topic") {
+			return true
+		}
+	}
+	return false
 }
 
 type ThreadPool struct {
