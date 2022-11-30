@@ -27,7 +27,8 @@ The file should be of the format:
 }
 ```
 **DO NOT** commit your credentials or the youtube-secret.json file.
-3. Build or run the project
+
+4. Build or run the project
 
 ```bash
 go run .
