@@ -106,7 +106,7 @@ func (c *YoutubeClient) playlistsItems(playlistId string, maxResults int64, page
 func createService() *youtube.Service {
 	ctx := context.Background()
 
-	b, err := ioutil.ReadFile("client_secret.json")
+	b, err := ioutil.ReadFile("secrets/youtube-secret.json")
 	if err != nil {
 		log.Fatalf("Unable to read client secret file: %v", err)
 	}

@@ -7,7 +7,7 @@
 
 1. Register for a GCP YouTube API key. For instructions, see: https://developers.google.com/youtube/v3/getting-started
 
-2. Create client_secret.json in the root directory
+2. Create youtube-secret.json in the secrets directory, using youtube-secret-template.json.
 
 The file should be of the format:
 ```json
@@ -25,7 +25,8 @@ The file should be of the format:
     ]
   }
 }
-```   
+```
+**DO NOT** commit your credentials or the youtube-secret.json file.
 3. Build or run the project
 
 ```bash
