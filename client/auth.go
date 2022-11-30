@@ -19,8 +19,8 @@ Please configure OAuth 2.0
 
 // getClient uses a Context and Config to retrieve a Token
 // then generate a Client. It returns the generated Client.
-func getClient(ctx context.Context, config *oauth2.Config) *http.Client {
-	cacheFile, err := tokenCacheFile()
+func getClient(driverType Driver, ctx context.Context, config *oauth2.Config) *http.Client {
+	cacheFile, err := tokenCacheFile(driverType)
 	if err != nil {
 		log.Fatalf("Unable to get path to cached credential file. %v", err)
 	}
@@ -34,15 +34,24 @@ func getClient(ctx context.Context, config *oauth2.Config) *http.Client {
 
 // tokenCacheFile generates credential file path/filename.
 // It returns the generated credential path/filename.
-func tokenCacheFile() (string, error) {
+func tokenCacheFile(driverType Driver) (string, error) {
 	usr, err := user.Current()
 	if err != nil {
 		return "", err
 	}
 	tokenCacheDir := filepath.Join(usr.HomeDir, ".credentials")
 	os.MkdirAll(tokenCacheDir, 0700)
-	return filepath.Join(tokenCacheDir,
-		url.QueryEscape("youtube-go-quickstart.json")), err
+	if driverType == DriverYoutube {
+		return filepath.Join(tokenCacheDir,
+			url.QueryEscape("youtube-playlist.json")), err
+	} else if driverType == DriverSpotify {
+		return filepath.Join(tokenCacheDir,
+			url.QueryEscape("spotify-playlist.json")), err
+	} else if driverType == DriverApple {
+		return filepath.Join(tokenCacheDir,
+			url.QueryEscape("apple-playlist.json")), err
+	}
+	return "", err
 }
 
 // tokenFromFile retrieves a Token from a given file path.
