@@ -35,7 +35,7 @@ type YoutubeClient struct {
 func NewYoutubeClient() (c *YoutubeClient) {
 	fmt.Println("> Building YT Client")
 	return &YoutubeClient{
-		service: createService(),
+		service: createService(DriverYoutube),
 		part:    "snippet",
 	}
 }
@@ -103,7 +103,7 @@ func (c *YoutubeClient) playlistsItems(playlistId string, maxResults int64, page
 	return response
 }
 
-func createService() *youtube.Service {
+func createService(driverType Driver) *youtube.Service {
 	ctx := context.Background()
 
 	b, err := ioutil.ReadFile("secrets/youtube-secret.json")
@@ -117,7 +117,7 @@ func createService() *youtube.Service {
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
-	client := getClient(ctx, config)
+	client := getClient(driverType, ctx, config)
 	service, err := youtube.New(client)
 
 	HandleError(err, "Error creating YouTube client")
