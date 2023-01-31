@@ -1,3 +1,5 @@
 .idea
 secrets/youtube-secret.json
+secrets/spotify-secret.json
 go.sum
+
