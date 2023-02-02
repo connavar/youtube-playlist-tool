@@ -3,14 +3,15 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"golang.org/x/net/context"
-	"golang.org/x/oauth2"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"os/user"
 	"path/filepath"
+
+	"golang.org/x/net/context"
+	"golang.org/x/oauth2"
 )
 
 const missingClientSecretsMessage = `
@@ -26,7 +27,7 @@ func getClient(driverType Driver, ctx context.Context, config *oauth2.Config) *h
 	}
 	tok, err := tokenFromFile(cacheFile)
 	if err != nil {
-		tok = getTokenFromWeb(config)
+		tok = getTokenFromWeb(driverType, config)
 		saveToken(cacheFile, tok)
 	}
 	return config.Client(ctx, tok)
@@ -69,7 +70,7 @@ func tokenFromFile(file string) (*oauth2.Token, error) {
 
 // getTokenFromWeb uses Config to request a Token.
 // It returns the retrieved Token.
-func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
+func getTokenFromWeb(driverType Driver, config *oauth2.Config) *oauth2.Token {
 	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
 	fmt.Printf("Go to the following link in your browser then type the "+
 		"authorization code: \n%v\n", authURL)
