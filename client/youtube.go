@@ -2,25 +2,14 @@ package client
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
+
 	"github.com/connavar/youtube-playlist-tool/model"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/youtube/v3"
-	"io/ioutil"
-	"log"
 )
-
-type Driver string
-
-var (
-	DriverYoutube Driver = "YouTubeDriver"
-	DriverSpotify Driver = "SpotifyDriver"
-	DriverApple   Driver = "SpotifyDriver"
-)
-
-var Drivers = map[Driver]PlaylistReader{
-	DriverYoutube: NewYoutubeClient(),
-}
 
 type PlaylistReader interface {
 	Playlists() chan model.Playlist
